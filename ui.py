@@ -61,7 +61,6 @@ class UI:
 
     def draw_start_menu(self, start_button):
         self.screen.blit(self.menu_bg, (0, 0))
-        self.draw_center_text("2Tris", self.title_font, WHITE, -40)
         start_button.draw(self.screen)
 
     def draw_game_over(self, restart_button, quit_button):
