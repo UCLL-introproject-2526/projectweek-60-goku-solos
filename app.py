@@ -122,7 +122,7 @@ def draw_game_over(screen):
     font = pygame.font.SysFont(None, 38)
     text = font.render("You Lost! Try Again?", True, (66, 135, 245))
     sub = pygame.font.SysFont(None, 28).render(
-        "Press R to Restart", True, (55, 255, 255)
+        "Press R to Restart", True, (255, 255, 255)
     )
 
     rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 20))
@@ -160,6 +160,8 @@ def main():
 
         if fall_time > 400:
             for piece in (left_piece, right_piece):
+                if game_over:
+                    break
                 if valid_move(piece, grid, dy=1):
                     piece.y += 1
                 else:
