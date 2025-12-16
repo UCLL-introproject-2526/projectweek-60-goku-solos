@@ -1,8 +1,8 @@
 import pygame
 import random
-from ui import UI
+from ui import UI, Button
 
-# --- Constants ---
+# Size of window/application and the framerate
 WIDTH_GAME, HEIGHT = 300, 600
 WIDTH_WINDOW = 600
 BLOCK_SIZE = 30
@@ -32,7 +32,7 @@ SHAPES = [
     [[0,0,1],[1,1,1]],
 ]
 
-# --- Piece class ---
+# --- Piece Class ---
 class Piece:
     def __init__(self):
         self.shape = random.choice(SHAPES)
@@ -42,7 +42,7 @@ class Piece:
     def rotate(self):
         self.shape = list(zip(*self.shape[::-1]))
 
-# --- Grid functions ---
+# -creating and definiing the grid
 def create_grid():
     return [[None for _ in range(COLS)] for _ in range(ROWS)]
 
@@ -69,7 +69,7 @@ def clear_lines(grid):
     lines_cleared = ROWS - len(new_grid)
     for _ in range(lines_cleared):
         new_grid.insert(0, [None for _ in range(COLS)])
-    return new_grid
+    return new_grid, lines_cleared
 
 def draw_grid(screen, grid, offset_x=0):
     for y in range(ROWS):
@@ -85,25 +85,24 @@ def draw_piece(screen, piece, offset_x=0):
             if cell:
                 pygame.draw.rect(screen, piece.color, ((piece.x + x + offset_x//BLOCK_SIZE)*BLOCK_SIZE, (piece.y+y)*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
 
-def draw_sidebar(screen):
+def draw_sidebar(screen, score):
     sidebar_rect = pygame.Rect(WIDTH_GAME, 0, WIDTH_WINDOW - WIDTH_GAME, HEIGHT)
     pygame.draw.rect(screen, (30,30,30), sidebar_rect)
-    font = pygame.font.SysFont(None, 24)
-    text = font.render("Sidebar: Score / Next / Info", True, (200,200,200))
+    font = pygame.font.SysFont(None, 28)
+    text = font.render(f"Score: {score:.1f}", True, (200,200,200))
     screen.blit(text, (WIDTH_GAME + 20, 20))
 
 # --- Main ---
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH_WINDOW, HEIGHT))
-    pygame.display.set_caption("Super Simple Tetris")
+    pygame.display.set_caption("2Tris")
     clock = pygame.time.Clock()
     ui = UI(screen, WIDTH_WINDOW, HEIGHT)
 
-    START = "start"
-    PLAYING = "playing"
-    GAME_OVER = "game_over"
+    START, PLAYING, GAME_OVER, PAUSED = "start", "playing", "game_over", "paused"
     state = START
+    game_over = False
 
     grid = create_grid()
     left_piece = Piece()
@@ -111,20 +110,41 @@ def main():
     left_piece.x = 1
     right_piece.x = COLS - 4
     fall_time = 0
-    game_over = False
+    score = 0.0
+
+    font_btn = pygame.font.SysFont(None, 32)
+
+    # --- Buttons ---
+    start_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2, 160, 50),
+                       text="Start", font=font_btn,
+                       bg_color=(50,150,50), text_color=(255,255,255))
+    go_restart_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2, 160, 50),
+                            text="Restart", font=font_btn,
+                            bg_color=(50,50,150), text_color=(255,255,255))
+    go_quit_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2+70, 160, 50),
+                         text="Quit", font=font_btn,
+                         bg_color=(150,50,50), text_color=(255,255,255))
+    resume_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 250, 160, 50),
+                        text="Resume", font=font_btn,
+                        bg_color=(50,150,50), text_color=(255,255,255))
+    pause_restart_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 320, 160, 50),
+                               text="Restart", font=font_btn,
+                               bg_color=(50,50,150), text_color=(255,255,255))
+    pause_quit_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 390, 160, 50),
+                            text="Quit", font=font_btn,
+                            bg_color=(150,50,50), text_color=(255,255,255))
+    pause_buttons = [resume_btn, pause_restart_btn, pause_quit_btn]
 
     running = True
     while running:
         dt = clock.tick(FPS)
         fall_time += dt
 
-        # --- Events ---
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                # Escape → main menu
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_z:  # returns to main menu
                     state = START
                     grid = create_grid()
                     left_piece = Piece()
@@ -132,24 +152,12 @@ def main():
                     left_piece.x = 1
                     right_piece.x = COLS - 4
                     fall_time = 0
+                    score = 0.0
                     game_over = False
-                # Start game
-                elif state == START and event.key == pygame.K_SPACE:
-                    grid = create_grid()
-                    left_piece = Piece()
-                    right_piece = Piece()
-                    left_piece.x = 1
-                    right_piece.x = COLS - 4
-                    fall_time = 0
-                    state = PLAYING
-                    game_over = False
-                # Restart game
-                elif state == GAME_OVER and event.key == pygame.K_r:
-                    state = START
-
-                # Controls for playing
                 if state == PLAYING:
-                    # Left piece - WASD
+                    if event.key == pygame.K_ESCAPE:
+                        state = PAUSED
+                    # Left piece (WASD CONTROLS)
                     if event.key == pygame.K_a and valid_move(left_piece, grid, dx=-1):
                         left_piece.x -= 1
                     elif event.key == pygame.K_d and valid_move(left_piece, grid, dx=1):
@@ -161,8 +169,8 @@ def main():
                         left_piece.rotate()
                         if not valid_move(left_piece, grid):
                             left_piece.shape = old
-                    # Right piece - arrows
-                    elif event.key == pygame.K_LEFT and valid_move(right_piece, grid, dx=-1):
+                    # Right piece (ARROW KEY CONTROLS)
+                    if event.key == pygame.K_LEFT and valid_move(right_piece, grid, dx=-1):
                         right_piece.x -= 1
                     elif event.key == pygame.K_RIGHT and valid_move(right_piece, grid, dx=1):
                         right_piece.x += 1
@@ -173,18 +181,65 @@ def main():
                         right_piece.rotate()
                         if not valid_move(right_piece, grid):
                             right_piece.shape = old
+                elif state == PAUSED:
+                    if event.key == pygame.K_ESCAPE:
+                        state = PLAYING
 
-        # --- Game logic ---
+            # Mouse click buttons
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                if state == START and start_btn.is_hovered(mouse_pos):
+                    state = PLAYING
+                    grid = create_grid()
+                    left_piece = Piece()
+                    right_piece = Piece()
+                    left_piece.x = 1
+                    right_piece.x = COLS - 4
+                    fall_time = 0
+                    score = 0.0
+                    game_over = False
+                elif state == GAME_OVER:
+                    if go_restart_btn.is_hovered(mouse_pos):
+                        state = PLAYING
+                        grid = create_grid()
+                        left_piece = Piece()
+                        right_piece = Piece()
+                        left_piece.x = 1
+                        right_piece.x = COLS - 4
+                        fall_time = 0
+                        score = 0.0
+                        game_over = False
+                    elif go_quit_btn.is_hovered(mouse_pos):
+                        running = False
+                elif state == PAUSED:
+                    for button in pause_buttons:
+                        if button.is_hovered(mouse_pos):
+                            if button.text == "Resume":
+                                state = PLAYING
+                            elif button.text == "Restart":
+                                state = PLAYING
+                                grid = create_grid()
+                                left_piece = Piece()
+                                right_piece = Piece()
+                                left_piece.x = 1
+                                right_piece.x = COLS - 4
+                                fall_time = 0
+                                score = 0.0
+                                game_over = False
+                            elif button.text == "Quit":
+                                running = False
+
+        # Logic
         if state == PLAYING and not game_over:
             if fall_time > 400:
                 for piece in (left_piece, right_piece):
-                    if game_over:
-                        break
                     if valid_move(piece, grid, dy=1):
                         piece.y += 1
                     else:
                         lock_piece(piece, grid)
-                        grid = clear_lines(grid)
+                        grid, lines_cleared = clear_lines(grid)
+                        score += 6.7 * lines_cleared  # i finally fixed the scoring, it should be fine now
+
                         if piece == left_piece:
                             new_piece = Piece()
                             new_piece.x = 1
@@ -203,22 +258,27 @@ def main():
                                 right_piece = new_piece
                 fall_time = 0
 
-        # --- Drawing ---
+        # UI drawing etc.
         screen.fill(BLACK)
-
         if state == START:
-            ui.draw_start_menu()
+            ui.draw_start_menu(start_btn)
         elif state == PLAYING:
-            draw_grid(screen, grid, offset_x=0)
-            draw_piece(screen, left_piece, offset_x=0)
-            draw_piece(screen, right_piece, offset_x=0)
-            draw_sidebar(screen)
+            draw_grid(screen, grid)
+            draw_piece(screen, left_piece)
+            draw_piece(screen, right_piece)
+            draw_sidebar(screen, score)
         elif state == GAME_OVER:
-            draw_grid(screen, grid, offset_x=0)
-            draw_piece(screen, left_piece, offset_x=0)
-            draw_piece(screen, right_piece, offset_x=0)
-            draw_sidebar(screen)
-            ui.draw_game_over()
+            draw_grid(screen, grid)
+            draw_piece(screen, left_piece)
+            draw_piece(screen, right_piece)
+            draw_sidebar(screen, score)
+            ui.draw_game_over(go_restart_btn, go_quit_btn)
+        elif state == PAUSED:
+            draw_grid(screen, grid)
+            draw_piece(screen, left_piece)
+            draw_piece(screen, right_piece)
+            draw_sidebar(screen, score)
+            ui.draw_pause_menu(pause_buttons)
 
         pygame.display.flip()
 
