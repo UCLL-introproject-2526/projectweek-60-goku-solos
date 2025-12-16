@@ -32,7 +32,7 @@ SHAPES = [
     [[0,0,1],[1,1,1]],
 ]
 
-# --- Piece Class ---
+# pieces class
 class Piece:
     def __init__(self):
         self.shape = random.choice(SHAPES)
@@ -42,7 +42,7 @@ class Piece:
     def rotate(self):
         self.shape = list(zip(*self.shape[::-1]))
 
-# -creating and definiing the grid
+# creating and definiing the grid
 def create_grid():
     return [[None for _ in range(COLS)] for _ in range(ROWS)]
 
@@ -114,25 +114,19 @@ def main():
 
     font_btn = pygame.font.SysFont(None, 32)
 
-    # --- Buttons ---
-    start_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2, 160, 50),
-                       text="Start", font=font_btn,
-                       bg_color=(50,150,50), text_color=(255,255,255))
-    go_restart_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2, 160, 50),
-                            text="Restart", font=font_btn,
-                            bg_color=(50,50,150), text_color=(255,255,255))
-    go_quit_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2+70, 160, 50),
-                         text="Quit", font=font_btn,
-                         bg_color=(150,50,50), text_color=(255,255,255))
-    resume_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 250, 160, 50),
-                        text="Resume", font=font_btn,
-                        bg_color=(50,150,50), text_color=(255,255,255))
-    pause_restart_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 320, 160, 50),
-                               text="Restart", font=font_btn,
-                               bg_color=(50,50,150), text_color=(255,255,255))
-    pause_quit_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 390, 160, 50),
-                            text="Quit", font=font_btn,
-                            bg_color=(150,50,50), text_color=(255,255,255))
+    # Buttons, see beginning of file for the import from UI
+    start_btn = Button(rect=(WIDTH_WINDOW//2-50, HEIGHT//2 + 100, 117, 35), text="Start", font=font_btn, bg_color=(246,87,2), text_color=(255,255,255)) # 2 + 100 is needed to move it vertically down
+    
+    go_restart_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2, 160, 50), text="Restart", font=font_btn, bg_color=(50,50,150), text_color=(255,255,255))
+    
+    go_quit_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2+70, 160, 50), text="Quit", font=font_btn, bg_color=(150,50,50), text_color=(255,255,255))
+    
+    resume_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 250, 160, 50), text="Resume", font=font_btn, bg_color=(50,150,50), text_color=(255,255,255))
+    
+    pause_restart_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 320, 160, 50), text="Restart", font=font_btn, bg_color=(50,50,150), text_color=(255,255,255))
+    
+    pause_quit_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 390, 160, 50), text="Quit", font=font_btn, bg_color=(150,50,50), text_color=(255,255,255))
+    
     pause_buttons = [resume_btn, pause_restart_btn, pause_quit_btn]
 
     running = True
