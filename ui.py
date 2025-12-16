@@ -29,6 +29,7 @@ class UI:
         pygame.font.init()
         self.menu_bg = pygame.image.load("assets/menu_bg.webp").convert()
         self.menu_bg = pygame.transform.scale(self.menu_bg, (width, height))
+        self.title_font = pygame.font.SysFont(None, 64)
 
     def draw_center_text(self, text, font, color, y_offset=0):
         surface = font.render(text, True, color)
@@ -57,5 +58,3 @@ class UI:
         self.draw_center_text("PAUSED", self.title_font, WHITE, -80)
         for button in buttons:
             button.draw(self.screen)
-
-quit 
