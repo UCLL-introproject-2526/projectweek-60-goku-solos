@@ -1,4 +1,27 @@
 import pygame
+def load_sounds():
+    sounds = {
+        "drop": pygame.mixer.Sound("sound/drop (2).wav"),
+        "clear": pygame.mixer.Sound("sound/clear.wav"),
+        "gameover": pygame.mixer.Sound("sound/gameover (2).wav"),
+    }
+    sounds["drop"].set_volume(0.5)
+    sounds["clear"].set_volume(0.7)
+    sounds["gameover"].set_volume(0.6)
+    return sounds
+def play_music():
+    pygame.mixer.music.load("sound/Blue Space v0_96.wav")
+    pygame.mixer.music.set_volume(0.3)
+    pygame.mixer.music.play(-1) 
+
+def stop_music():
+    pygame.mixer.music.stop()
+
+def pause_music():
+    pygame.mixer.music.pause()
+
+def resume_music():
+    pygame.mixer.music.unpause()
 
 WHITE = (255, 255, 255)
 RED = (255, 60, 60)

@@ -1,6 +1,7 @@
 import pygame
 import random
-from ui import UI, Button
+from ui import UI, Button, load_sounds, play_music
+
 
 # Size of window/application and the framerate
 WIDTH_GAME, HEIGHT = 300, 600
@@ -99,6 +100,12 @@ def main():
     pygame.display.set_caption("2Tris")
     clock = pygame.time.Clock()
     ui = UI(screen, WIDTH_WINDOW, HEIGHT)
+
+ #---SOUND AND MUSIC------
+    pygame.mixer.init()
+
+    sounds = load_sounds()   
+    play_music()
 
     START, PLAYING, GAME_OVER, PAUSED = "start", "playing", "game_over", "paused"
     state = START
