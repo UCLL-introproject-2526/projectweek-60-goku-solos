@@ -238,7 +238,7 @@ def main():
                     else:
                         lock_piece(piece, grid)
                         grid, lines_cleared = clear_lines(grid)
-                        score += 6.7 * lines_cleared  # i finally fixed the scoring, it should be fine now
+                        score += 67 * lines_cleared  # i finally fixed the scoring, it should be fine now
 
                         if piece == left_piece:
                             new_piece = Piece()
