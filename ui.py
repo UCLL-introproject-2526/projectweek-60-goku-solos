@@ -27,7 +27,7 @@ class UI:
         self.width = width
         self.height = height
         pygame.font.init()
-        self.menu_bg = pygame.image.load("assets/menu_bg.png").convert()
+        self.menu_bg = pygame.image.load("assets/menu_bg.webp").convert()
         self.menu_bg = pygame.transform.scale(self.menu_bg, (width, height))
 
     def draw_center_text(self, text, font, color, y_offset=0):
@@ -57,3 +57,5 @@ class UI:
         self.draw_center_text("PAUSED", self.title_font, WHITE, -80)
         for button in buttons:
             button.draw(self.screen)
+
+quit 
