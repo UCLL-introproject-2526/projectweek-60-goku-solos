@@ -117,10 +117,26 @@ def draw_piece(screen, piece):
                      (piece.y + y) * BLOCK_SIZE,
                      BLOCK_SIZE, BLOCK_SIZE)
                 )
+# The code under is needed to restart the game and when you lose
+def draw_game_over(screen):
+    font = pygame.font.SysFont(None, 38)
+    text = font.render("You Lost! Try Again?", True, (66, 135, 245))
+    sub = pygame.font.SysFont(None, 28).render(
+        "Press R to Restart", True, (55, 255, 255)
+    )
+
+    rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 20))
+    sub_rect = sub.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 20))
+
+    screen.blit(text, rect)
+    screen.blit(sub, sub_rect)
+
 
 
 # 
 def main():
+    game_over = False # needed for later, to start the game again
+
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Super Simple Tetris")
@@ -148,19 +164,41 @@ def main():
                     piece.y += 1
                 else:
                     lock_piece(piece, grid)
+                    grid = clear_lines(grid)
+                
                     if piece == left_piece:
-                        left_piece = Piece()
-                        left_piece.x = 1
+                        new_piece = Piece()
+                        new_piece.x = 1
+                        if not valid_move(new_piece, grid):
+                            game_over = True
+                        else:
+                            left_piece = new_piece
+                
                     else:
-                        right_piece = Piece()
-                        right_piece.x = COLS - 4
+                        new_piece = Piece()
+                        new_piece.x = COLS - 4
+                        if not valid_move(new_piece, grid):
+                            game_over = True
+                        else:
+                            right_piece = new_piece
 
-            fall_time = 0
+                
+                fall_time = 0
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
+                if game_over and event.key == pygame.K_r:
+                    grid = create_grid()
+                    left_piece = Piece()
+                    right_piece = Piece()
+                    left_piece.x = 1
+                    right_piece.x = COLS - 4
+                    fall_time = 0
+                    game_over = False
+
                 if event.key == pygame.K_a and valid_move(left_piece, grid, dx=-1):
                     left_piece.x -= 1
                 elif event.key == pygame.K_d and valid_move(left_piece, grid, dx=1):
@@ -193,6 +231,9 @@ def main():
         draw_grid(screen, grid)
         draw_piece(screen, left_piece)
         draw_piece(screen, right_piece)
+        if game_over:
+            draw_game_over(screen)
+
         pygame.display.flip()
 
     pygame.quit()
