@@ -31,7 +31,7 @@ class UI:
         self.menu_bg = pygame.transform.scale(self.menu_bg, (width, height))
         self.title_font = pygame.font.SysFont(None, 64)
 
-    def draw_center_text(self, text, font, color, y_offset=0):
+    def draw_center_text(self, text, font, color, y_offset=0),:
         surface = font.render(text, True, color)
         rect = surface.get_rect(center=(self.width//2, self.height//2 + y_offset))
         self.screen.blit(surface, rect)
