@@ -27,8 +27,8 @@ class UI:
         self.width = width
         self.height = height
         pygame.font.init()
-        self.title_font = pygame.font.SysFont(None, 56)
-        self.text_font = pygame.font.SysFont(None, 28)
+        self.menu_bg = pygame.image.load("assets/menu_bg.png").convert()
+        self.menu_bg = pygame.transform.scale(self.menu_bg, (width, height))
 
     def draw_center_text(self, text, font, color, y_offset=0):
         surface = font.render(text, True, color)
@@ -36,7 +36,7 @@ class UI:
         self.screen.blit(surface, rect)
 
     def draw_start_menu(self, start_button):
-        self.screen.fill(GRAY)
+        self.screen.blit(self.menu_bg, (0, 0))
         self.draw_center_text("2Tris", self.title_font, WHITE, -40)
         start_button.draw(self.screen)
 
