@@ -57,5 +57,3 @@ class UI:
         self.draw_center_text("PAUSED", self.title_font, WHITE, -80)
         for button in buttons:
             button.draw(self.screen)
-
-quit 
