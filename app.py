@@ -3,13 +3,17 @@ import random
 from ui import UI, Button , load_sounds , play_music
 from settings import settings
 
+#SIDEBAR_IMAGE=pygame.image.load("assets/sidebar_image.webp").convert_alpha()
+#SIDEBAR_IMAGE=pygame.transform.scale(SIDEBAR_IMAGE(200,200))
+
+
 # Size of window/application and the framerate
 WIDTH_GAME, HEIGHT = 300, 600
 WIDTH_WINDOW = 600
 BLOCK_SIZE = 30
 COLS = WIDTH_GAME // BLOCK_SIZE
 ROWS = HEIGHT // BLOCK_SIZE
-FPS = 60
+FPS = 144
 
 # Currently adding a settings menu where you can change the theme of the game post the main menu screen.
 BLACK = (0, 0, 0)
@@ -94,12 +98,22 @@ def draw_piece(screen, piece, offset_x=0):
             if cell:
                 pygame.draw.rect(screen, piece.color, ((piece.x + x + offset_x//BLOCK_SIZE)*BLOCK_SIZE, (piece.y+y)*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
 
-def draw_sidebar(screen, score):
+def draw_sidebar(screen, score,sidebar_image):
     sidebar_rect = pygame.Rect(WIDTH_GAME, 0, WIDTH_WINDOW - WIDTH_GAME, HEIGHT)
     pygame.draw.rect(screen, (30,30,30), sidebar_rect)
+
     font = pygame.font.SysFont(None, 28)
     text = font.render(f"Score: {score:.1f}", True, (200,200,200))
-    screen.blit(text, (WIDTH_GAME + 20, 20))
+
+    # Score position
+    score_x = WIDTH_GAME + 20
+    score_y = 20
+    screen.blit(text, (score_x, score_y))
+
+    # Image position (under the score)
+    image_x = WIDTH_GAME + 20
+    image_y = score_y + 40  # spacing below score
+    screen.blit(sidebar_image, (image_x, image_y))
 
 # The ACTUAL game
 def main():
@@ -112,6 +126,12 @@ def main():
     
     
     screen = pygame.display.set_mode((WIDTH_WINDOW, HEIGHT))
+    sidebar_image = pygame.image.load("assets/sidebar_image.webp").convert_alpha()
+    sidebar_image = pygame.transform.scale(sidebar_image, (300, 300))
+    board_bg = pygame.image.load("assets/board_bg.webp").convert()
+    board_bg = pygame.transform.scale(board_bg, (WIDTH_GAME, HEIGHT))
+
+
     pygame.display.set_caption("2Tris")
     clock = pygame.time.Clock()
     ui = UI(screen, WIDTH_WINDOW, HEIGHT)
@@ -285,19 +305,22 @@ def main():
         # UI drawing etc.
         screen.fill(settings.bg_color) # Here specifically calling the color from settings.py in order to have a different background color depending on the users setting.
         if state == START:
-            ui.draw_start_menu([start_btn])
+            ui.draw_start_menu(start_btn)
         elif state == PLAYING:
+            screen.blit(board_bg, (0, 0))
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-            draw_sidebar(screen, score)
+            draw_sidebar(screen, score, sidebar_image)
         elif state == GAME_OVER:
+            screen.blit(board_bg, (0, 0))
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-            draw_sidebar(screen, score)
+            draw_sidebar(screen, score,sidebar_image)
             ui.draw_game_over(go_restart_btn, go_quit_btn)
         elif state == PAUSED:
+            screen.blit(board_bg, (0, 0))
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
