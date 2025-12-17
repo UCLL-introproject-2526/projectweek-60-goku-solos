@@ -8,7 +8,7 @@ class AnimatedBackground:
         self.speed = 1
 
         self.surface = pygame.Surface((width, height))
-        self.surface.fill((30, 30, 30))  # dark background
+        self.surface.fill((100, 50, 10))  # dark background
 
     def update(self):
         self.y += self.speed
