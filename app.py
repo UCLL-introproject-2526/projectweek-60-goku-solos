@@ -1,6 +1,7 @@
 import pygame
 import random
 from ui import UI, Button
+from settings import settings
 
 # Size of window/application and the framerate
 WIDTH_GAME, HEIGHT = 300, 600
@@ -14,6 +15,7 @@ FPS = 60
 BLACK = (0, 0, 0)
 GRAY = (50, 50, 50)
 WHITE = (255, 255, 255)
+ORANGE_THEME = (246, 87, 2)
 
 # Colors for all of the different blocks, these are the preset colors but we randomized which block gets
 # which color, not preset colors for each unique block like in normal Tetris
@@ -99,7 +101,7 @@ def draw_sidebar(screen, score):
     text = font.render(f"Score: {score:.1f}", True, (200,200,200))
     screen.blit(text, (WIDTH_GAME + 20, 20))
 
-# --- Main ---
+# The ACTUAL game
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH_WINDOW, HEIGHT))
@@ -122,17 +124,20 @@ def main():
     font_btn = pygame.font.SysFont(None, 32)
 
     # Buttons, see beginning of file for the import from UI
-    start_btn = Button(rect=(WIDTH_WINDOW//2-50, HEIGHT//2 + 100, 117, 35), text="Start", font=font_btn, bg_color=(246,87,2), text_color=(255,255,255)) # 2 + 100 is needed to move it vertically down
+    start_btn = Button(rect=(WIDTH_WINDOW//2-50, HEIGHT//2 + 100, 117, 35), text="Start", font=font_btn, bg_color=(ORANGE_THEME), text_color=(WHITE)) # 2 + 100 is needed to move it vertically down
     
-    go_restart_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2, 160, 50), text="Restart", font=font_btn, bg_color=(50,50,150), text_color=(255,255,255))
+    go_restart_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2, 160, 50), text="Restart", font=font_btn, bg_color=(50,50,150), text_color=(WHITE))
     
-    go_quit_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2+70, 160, 50), text="Quit", font=font_btn, bg_color=(150,50,50), text_color=(255,255,255))
+    go_quit_btn = Button(rect=(WIDTH_WINDOW//2-80, HEIGHT//2+70, 160, 50), text="Quit", font=font_btn, bg_color=(150,50,50), text_color=(WHITE))
     
-    resume_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 250, 160, 50), text="Resume", font=font_btn, bg_color=(50,150,50), text_color=(255,255,255))
+    resume_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 250, 160, 50), text="Resume", font=font_btn, bg_color=(50,150,50), text_color=(WHITE))
     
-    pause_restart_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 320, 160, 50), text="Restart", font=font_btn, bg_color=(50,50,150), text_color=(255,255,255))
+    pause_restart_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 320, 160, 50), text="Restart", font=font_btn, bg_color=(50,50,150), text_color=(WHITE))
     
-    pause_quit_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 390, 160, 50), text="Quit", font=font_btn, bg_color=(150,50,50), text_color=(255,255,255))
+    pause_quit_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 390, 160, 50), text="Quit", font=font_btn, bg_color=(150,50,50), text_color=(WHITE))
+
+    settings_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 330, 160, 50), text="Settings", font=font_btn, bg_color=(80,80,150), text_color=WHITE)
+
 
     pause_buttons = [resume_btn, pause_restart_btn, pause_quit_btn]
 
@@ -230,7 +235,7 @@ def main():
                             elif button.text == "Quit":
                                 running = False
 
-        # Logic
+        # buncha if statements, such as for when you're able to move (whether its game over etc.) and scoring
         if state == PLAYING and not game_over:
             if fall_time > 400:
                 for piece in (left_piece, right_piece):
@@ -260,7 +265,7 @@ def main():
                 fall_time = 0
 
         # UI drawing etc.
-        screen.fill(BLACK)
+        screen.fill(settings.bg_color) # Here specifically calling the color from settings.py in order to have a different background color depending on the users setting.
         if state == START:
             ui.draw_start_menu(start_btn)
         elif state == PLAYING:
