@@ -90,7 +90,7 @@ def draw_grid(screen, grid, offset_x=0):
             color = grid[y][x]
             if color:
                 pygame.draw.rect(screen, color, ((x+offset_x//BLOCK_SIZE)*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
-            pygame.draw.rect(screen, GRAY, ((x+offset_x//BLOCK_SIZE)*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+            pygame.draw.rect(screen, BLACK, ((x+offset_x//BLOCK_SIZE)*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
 
 def draw_piece(screen, piece, offset_x=0):
     for y, row in enumerate(piece.shape):
@@ -100,10 +100,10 @@ def draw_piece(screen, piece, offset_x=0):
 
 def draw_sidebar(screen, score,sidebar_image):
     sidebar_rect = pygame.Rect(WIDTH_GAME, 0, WIDTH_WINDOW - WIDTH_GAME, HEIGHT)
-    pygame.draw.rect(screen, (30,30,30), sidebar_rect)
+    pygame.draw.rect(screen, (GRAY), sidebar_rect)
 
     font = pygame.font.SysFont(None, 28)
-    text = font.render(f"Score: {score:.1f}", True, (200,200,200))
+    text = font.render(f"Score: {score:.1f}", True, (WHITE))
 
     # Score position
     score_x = WIDTH_GAME + 20
@@ -127,9 +127,8 @@ def main():
     
     screen = pygame.display.set_mode((WIDTH_WINDOW, HEIGHT))
     sidebar_image = pygame.image.load("assets/sidebar_image.webp").convert_alpha()
-    sidebar_image = pygame.transform.scale(sidebar_image, (300, 300))
-    board_bg = pygame.image.load("assets/board_bg.webp").convert()
-    board_bg = pygame.transform.scale(board_bg, (WIDTH_GAME, HEIGHT))
+    sidebar_image = pygame.transform.scale(sidebar_image, (260, 520))
+    
 
 
     pygame.display.set_caption("2Tris")
@@ -307,20 +306,20 @@ def main():
         if state == START:
             ui.draw_start_menu(start_btn)
         elif state == PLAYING:
-            screen.blit(board_bg, (0, 0))
+            
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
             draw_sidebar(screen, score, sidebar_image)
         elif state == GAME_OVER:
-            screen.blit(board_bg, (0, 0))
+            
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
             draw_sidebar(screen, score,sidebar_image)
             ui.draw_game_over(go_restart_btn, go_quit_btn)
         elif state == PAUSED:
-            screen.blit(board_bg, (0, 0))
+            
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
