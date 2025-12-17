@@ -49,7 +49,7 @@ class Piece:
     def rotate(self):
         self.shape = list(zip(*self.shape[::-1]))
 
-# creating and definiing the grid
+# defining what create_grid will do, scroll down to main() create grid to see
 def create_grid():
     return [[None for _ in range(COLS)] for _ in range(ROWS)]
 
