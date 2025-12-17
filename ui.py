@@ -1,9 +1,10 @@
 import pygame
+
 def load_sounds():
     sounds = {
         "drop": pygame.mixer.Sound("sound/drop (2).wav"),
         "clear": pygame.mixer.Sound("sound/clear.wav"),
-        "gameover": pygame.mixer.Sound("sound/gameover (2).wav"),
+        "gameover": pygame.mixer.Sound("sound\gameover.wav"),
     }
     sounds["drop"].set_volume(0.5)
     sounds["clear"].set_volume(0.7)
@@ -61,7 +62,13 @@ class UI:
 
     def draw_start_menu(self, button):
         self.screen.blit(self.menu_bg, (0, 0))
-        start_button.draw(self.screen)
+        
+        # CHANGED from; start_button.draw(self.screen) to the code below, this line only allows us to use this function
+        # for one button whereas we are creating a settings button and therefore it needed to be changed to accept
+        # multiple buttons
+        for btn in Button:
+            btn.draw(self.screen)
+
 
     def draw_game_over(self, restart_button, quit_button):
         overlay = pygame.Surface((self.width, self.height))
@@ -80,3 +87,5 @@ class UI:
         self.draw_center_text("PAUSED", self.title_font, WHITE, -80)
         for button in buttons:
             button.draw(self.screen)
+
+            
