@@ -55,7 +55,7 @@ def create_grid():
 
 # enumerate is needed to get position and value, it gives the index whereas without it we wouldn't get it
 
-def valid_move(piece, grid, dx=0, dy=0):
+def valid_move(piece, grid, dx=0, dy=0): # defines when a piece is allowed to move
     for y, row in enumerate(piece.shape):
         for x, cell in enumerate(row):
             if cell:
@@ -67,34 +67,34 @@ def valid_move(piece, grid, dx=0, dy=0):
                     return False
     return True
 
-def lock_piece(piece, grid):
+def lock_piece(piece, grid): # tells us when the pieces will get locked (placed)
     for y, row in enumerate(piece.shape):
         for x, cell in enumerate(row):
             if cell:
                 grid[piece.y + y][piece.x + x] = piece.color
 
-def clear_lines(grid):
+def clear_lines(grid): # tells us when you clear a row (when theres 1 block on each one of the rows)
     new_grid = [row for row in grid if None in row]
     lines_cleared = ROWS - len(new_grid)
     for _ in range(lines_cleared):
         new_grid.insert(0, [None for _ in range(COLS)])
     return new_grid, lines_cleared
 
-def draw_grid(screen, grid, offset_x=0):
+def draw_grid(screen, grid, offset_x=0): # the grid for playing (makes have the classic blocky  background)
     for y in range(ROWS):
         for x in range(COLS):
             color = grid[y][x]
             if color:
                 pygame.draw.rect(screen, color, ((x+offset_x//BLOCK_SIZE)*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
-            pygame.draw.rect(screen, GRAY, ((x+offset_x//BLOCK_SIZE)*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+                pygame.draw.rect(screen, GRAY, ((x+offset_x//BLOCK_SIZE)*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
 
-def draw_piece(screen, piece, offset_x=0):
+def draw_piece(screen, piece, offset_x=0): # draw creates the actual piece and their shape (such as the L shape)
     for y, row in enumerate(piece.shape):
         for x, cell in enumerate(row):
             if cell:
                 pygame.draw.rect(screen, piece.color, ((piece.x + x + offset_x//BLOCK_SIZE)*BLOCK_SIZE, (piece.y+y)*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
 
-def draw_sidebar(screen, score):
+def draw_sidebar(screen, score): # sidebar when you enter the game past the main menu, it doesn't have much except for score
     sidebar_rect = pygame.Rect(WIDTH_GAME, 0, WIDTH_WINDOW - WIDTH_GAME, HEIGHT)
     pygame.draw.rect(screen, (30,30,30), sidebar_rect)
     font = pygame.font.SysFont(None, 28)
@@ -116,15 +116,18 @@ def main():
     clock = pygame.time.Clock()
     ui = UI(screen, WIDTH_WINDOW, HEIGHT)
 
-    #---SOUND AND MUSIC------
+    # the sounds for clearing a row
 
     sounds = load_sounds()   
     play_music()
 
+    # describing in what state the game is in, this will come in handy later for describing when a block can and cannot move
     START, PLAYING, GAME_OVER, PAUSED = "start", "playing", "game_over", "paused"
     state = START
     game_over = False
 
+
+    #grid creation
     grid = create_grid()
     left_piece = Piece()
     right_piece = Piece()
@@ -153,6 +156,7 @@ def main():
 
     pause_buttons = [resume_btn, pause_restart_btn, pause_quit_btn]
 
+    
     running = True
     while running:
         dt = clock.tick(FPS)
@@ -173,7 +177,7 @@ def main():
                     score = 0.0
                     game_over = False
                 if state == PLAYING:
-                    if event.key == pygame.K_ESCAPE:
+                    if event.key == pygame.K_ESCAPE: # this is the trigger for the pause menu
                         state = PAUSED
                     # Left piece (WASD CONTROLS)
                     if event.key == pygame.K_a and valid_move(left_piece, grid, dx=-1):
@@ -199,7 +203,7 @@ def main():
                         right_piece.rotate()
                         if not valid_move(right_piece, grid):
                             right_piece.shape = old
-                elif state == PAUSED:
+                elif state == PAUSED: # if you are already paused, this makes it so you can also leave the pauused menu with the ESCAPE key as well, the key has different functions depending on when you use it
                     if event.key == pygame.K_ESCAPE:
                         state = PLAYING
 
@@ -229,7 +233,7 @@ def main():
                         game_over = False
                     elif go_quit_btn.is_hovered(mouse_pos):
                         running = False
-                elif state == PAUSED:
+                elif state == PAUSED: # this is for the settings menu, makes it so that if resume or restart is hovered by the users mouse, the state of the game changes, and either just resumes the game, restarts it and resets all the values (as shown) or quits the game, and if so running = False which stops the program, and doesn't make you go to the main menu
                     for button in pause_buttons:
                         if button.is_hovered(mouse_pos):
                             if button.text == "Resume":

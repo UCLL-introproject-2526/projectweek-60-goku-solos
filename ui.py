@@ -1,5 +1,6 @@
 import pygame
 
+# in order to load sounds
 def load_sounds():
     sounds = {
         "drop": pygame.mixer.Sound("sound/drop (2).wav"),
@@ -27,7 +28,10 @@ def resume_music():
 WHITE = (255, 255, 255)
 RED = (255, 60, 60)
 GRAY = (40, 40, 40)
+BLACK = (0, 0, 0)
 
+
+#this class is needed for all of the buttons in the app.py file
 class Button:
     def __init__(self, rect, text, font, bg_color, text_color):
         self.rect = pygame.Rect(rect)
@@ -45,6 +49,7 @@ class Button:
     def is_hovered(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
 
+# this is basically all the UI (user interface), its defined how each of them is drawn, such as the main menu (start menu) game over, and pause menu as well
 class UI:
     def __init__(self, screen, width, height):
         self.screen = screen
