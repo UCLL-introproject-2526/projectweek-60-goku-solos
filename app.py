@@ -1,6 +1,6 @@
 import pygame
 import random
-from ui import UI, Button
+from ui import UI, Button , load_sounds , play_music
 from settings import settings
 
 # Size of window/application and the framerate
