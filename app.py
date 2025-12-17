@@ -103,11 +103,14 @@ def draw_sidebar(screen, score):
 
 # The ACTUAL game
 def main():
-    pygame.mixer.pre_init(44100, -16, 2, 512)
     pygame.init()
+
+    pygame.mixer.pre_init(44100, -16, 2, 512)
     pygame.mixer.init()
     pygame.mixer.set_num_channels(8)
-    pygame.init()
+
+    
+    
     screen = pygame.display.set_mode((WIDTH_WINDOW, HEIGHT))
     pygame.display.set_caption("2Tris")
     clock = pygame.time.Clock()
@@ -282,7 +285,7 @@ def main():
         # UI drawing etc.
         screen.fill(settings.bg_color) # Here specifically calling the color from settings.py in order to have a different background color depending on the users setting.
         if state == START:
-            ui.draw_start_menu(start_btn)
+            ui.draw_start_menu([start_btn])
         elif state == PLAYING:
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)

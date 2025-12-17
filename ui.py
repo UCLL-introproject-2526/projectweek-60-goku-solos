@@ -66,7 +66,7 @@ class UI:
         # CHANGED from; start_button.draw(self.screen) to the code below, this line only allows us to use this function
         # for one button whereas we are creating a settings button and therefore it needed to be changed to accept
         # multiple buttons
-        for btn in Button:
+        for btn in button:
             btn.draw(self.screen)
 
 
