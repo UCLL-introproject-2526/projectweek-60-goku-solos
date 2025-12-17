@@ -60,9 +60,15 @@ class UI:
         rect = surface.get_rect(center=(self.width//2, self.height//2 + y_offset))
         self.screen.blit(surface, rect)
 
-    def draw_start_menu(self, start_button):
+    def draw_start_menu(self, button):
         self.screen.blit(self.menu_bg, (0, 0))
-        start_button.draw(self.screen)
+        
+        # CHANGED from; start_button.draw(self.screen) to the code below, this line only allows us to use this function
+        # for one button whereas we are creating a settings button and therefore it needed to be changed to accept
+        # multiple buttons
+        for btn in Button:
+            btn.draw(self.screen)
+
 
     def draw_game_over(self, restart_button, quit_button):
         overlay = pygame.Surface((self.width, self.height))
@@ -81,3 +87,5 @@ class UI:
         self.draw_center_text("PAUSED", self.title_font, WHITE, -80)
         for button in buttons:
             button.draw(self.screen)
+
+            
