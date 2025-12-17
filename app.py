@@ -10,8 +10,13 @@ COLS = WIDTH_GAME // BLOCK_SIZE
 ROWS = HEIGHT // BLOCK_SIZE
 FPS = 60
 
+# Currently adding a settings menu where you can change the theme of the game post the main menu screen.
 BLACK = (0, 0, 0)
 GRAY = (50, 50, 50)
+WHITE = (255, 255, 255)
+
+# Colors for all of the different blocks, these are the preset colors but we randomized which block gets
+# which color, not preset colors for each unique block like in normal Tetris
 COLORS = [
     (0, 255, 255),  # I
     (255, 255, 0),  # O
@@ -45,6 +50,8 @@ class Piece:
 # creating and definiing the grid
 def create_grid():
     return [[None for _ in range(COLS)] for _ in range(ROWS)]
+
+# enumerate is needed to get position and value, it gives the index whereas without it we wouldn't get it
 
 def valid_move(piece, grid, dx=0, dy=0):
     for y, row in enumerate(piece.shape):
@@ -126,7 +133,7 @@ def main():
     pause_restart_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 320, 160, 50), text="Restart", font=font_btn, bg_color=(50,50,150), text_color=(255,255,255))
     
     pause_quit_btn = Button(rect=(WIDTH_WINDOW//2 - 80, 390, 160, 50), text="Quit", font=font_btn, bg_color=(150,50,50), text_color=(255,255,255))
-    
+
     pause_buttons = [resume_btn, pause_restart_btn, pause_quit_btn]
 
     running = True
