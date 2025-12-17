@@ -1,7 +1,6 @@
 import pygame
 import random
-from ui import UI, Button, load_sounds, play_music
-
+from ui import UI, Button
 
 # Size of window/application and the framerate
 WIDTH_GAME, HEIGHT = 300, 600
@@ -38,7 +37,7 @@ SHAPES = [
     [[0,0,1],[1,1,1]],
 ]
 
-# pieces class
+# tetris pieces class
 class Piece:
     def __init__(self):
         self.shape = random.choice(SHAPES)
@@ -107,12 +106,6 @@ def main():
     pygame.display.set_caption("2Tris")
     clock = pygame.time.Clock()
     ui = UI(screen, WIDTH_WINDOW, HEIGHT)
-
- #---SOUND AND MUSIC------
-    pygame.mixer.init()
-
-    sounds = load_sounds()   
-    play_music()
 
     START, PLAYING, GAME_OVER, PAUSED = "start", "playing", "game_over", "paused"
     state = START
