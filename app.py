@@ -1,6 +1,6 @@
 import pygame
 import random
-from ui import UI, Button
+from ui import UI, Button , load_sounds , play_music
 from settings import settings
 
 # Size of window/application and the framerate
@@ -104,10 +104,22 @@ def draw_sidebar(screen, score):
 # The ACTUAL game
 def main():
     pygame.init()
+
+    pygame.mixer.pre_init(44100, -16, 2, 512)
+    pygame.mixer.init()
+    pygame.mixer.set_num_channels(8)
+
+    
+    
     screen = pygame.display.set_mode((WIDTH_WINDOW, HEIGHT))
     pygame.display.set_caption("2Tris")
     clock = pygame.time.Clock()
     ui = UI(screen, WIDTH_WINDOW, HEIGHT)
+
+    #---SOUND AND MUSIC------
+
+    sounds = load_sounds()   
+    play_music()
 
     START, PLAYING, GAME_OVER, PAUSED = "start", "playing", "game_over", "paused"
     state = START
@@ -243,8 +255,13 @@ def main():
                         piece.y += 1
                     else:
                         lock_piece(piece, grid)
+                        sounds["drop"].play()
+
                         grid, lines_cleared = clear_lines(grid)
-                        score += 67 * lines_cleared  # i finally fixed the scoring, it should be fine now
+                        if lines_cleared > 0:
+                            sounds["clear"].play()
+
+                        score += 67 * lines_cleared # i finally fixed the scoring, it should be fine now
 
                         if piece == left_piece:
                             new_piece = Piece()
@@ -260,6 +277,7 @@ def main():
                             if not valid_move(new_piece, grid):
                                 game_over = True
                                 state = GAME_OVER
+                                sounds["gameover"].play()
                             else:
                                 right_piece = new_piece
                 fall_time = 0

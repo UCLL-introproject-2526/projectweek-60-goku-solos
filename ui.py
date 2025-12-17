@@ -1,9 +1,10 @@
 import pygame
+
 def load_sounds():
     sounds = {
         "drop": pygame.mixer.Sound("sound/drop (2).wav"),
         "clear": pygame.mixer.Sound("sound/clear.wav"),
-        "gameover": pygame.mixer.Sound("sound/gameover (2).wav"),
+        "gameover": pygame.mixer.Sound("sound/gameover.wav"),
     }
     sounds["drop"].set_volume(0.5)
     sounds["clear"].set_volume(0.7)
@@ -59,14 +60,10 @@ class UI:
         rect = surface.get_rect(center=(self.width//2, self.height//2 + y_offset))
         self.screen.blit(surface, rect)
 
-    def draw_start_menu(self, button):
+    def draw_start_menu(self, start_button):
         self.screen.blit(self.menu_bg, (0, 0))
         
-        # CHANGED from; start_button.draw(self.screen) to the code below, this line only allows us to use this function
-        # for one button whereas we are creating a settings button and therefore it needed to be changed to accept
-        # multiple buttons
-        for btn in Button:
-            btn.draw(self.screen)
+        start_button.draw(self.screen)
 
 
     def draw_game_over(self, restart_button, quit_button):
