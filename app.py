@@ -323,7 +323,7 @@ def main():
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-            draw_sidebar(screen, score)
+            draw_sidebar(screen, score, sidebar_image)
             ui.draw_pause_menu(pause_buttons)
 
         pygame.display.flip()
