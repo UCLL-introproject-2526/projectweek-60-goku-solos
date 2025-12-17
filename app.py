@@ -95,14 +95,17 @@ def draw_sidebar(screen, score):
 
 # --- Main ---
 def main():
+    pygame.mixer.pre_init(44100, -16, 2, 512)
+    pygame.init()
+    pygame.mixer.init()
+    pygame.mixer.set_num_channels(8)
     pygame.init()
     screen = pygame.display.set_mode((WIDTH_WINDOW, HEIGHT))
     pygame.display.set_caption("2Tris")
     clock = pygame.time.Clock()
     ui = UI(screen, WIDTH_WINDOW, HEIGHT)
 
- #---SOUND AND MUSIC------
-    pygame.mixer.init()
+    #---SOUND AND MUSIC------
 
     sounds = load_sounds()   
     play_music()
@@ -238,8 +241,13 @@ def main():
                         piece.y += 1
                     else:
                         lock_piece(piece, grid)
+                        sounds["drop"].play()
+
                         grid, lines_cleared = clear_lines(grid)
-                        score += 67 * lines_cleared  # i finally fixed the scoring, it should be fine now
+                        if lines_cleared > 0:
+                            sounds["clear"].play()
+
+                        score += 67 * lines_cleared # i finally fixed the scoring, it should be fine now
 
                         if piece == left_piece:
                             new_piece = Piece()
@@ -255,6 +263,7 @@ def main():
                             if not valid_move(new_piece, grid):
                                 game_over = True
                                 state = GAME_OVER
+                                sounds["gameover"].play()
                             else:
                                 right_piece = new_piece
                 fall_time = 0

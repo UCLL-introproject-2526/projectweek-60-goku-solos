@@ -1,9 +1,10 @@
 import pygame
+
 def load_sounds():
     sounds = {
         "drop": pygame.mixer.Sound("sound/drop (2).wav"),
         "clear": pygame.mixer.Sound("sound/clear.wav"),
-        "gameover": pygame.mixer.Sound("sound/gameover (2).wav"),
+        "gameover": pygame.mixer.Sound("sound\gameover.wav"),
     }
     sounds["drop"].set_volume(0.5)
     sounds["clear"].set_volume(0.7)
