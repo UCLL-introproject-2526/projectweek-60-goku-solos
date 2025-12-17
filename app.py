@@ -285,7 +285,7 @@ def main():
         # UI drawing etc.
         screen.fill(settings.bg_color) # Here specifically calling the color from settings.py in order to have a different background color depending on the users setting.
         if state == START:
-            ui.draw_start_menu([start_btn])
+            ui.draw_start_menu(start_btn)
         elif state == PLAYING:
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
