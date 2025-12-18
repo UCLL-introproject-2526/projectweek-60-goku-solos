@@ -99,18 +99,15 @@ def draw_piece(screen, piece, offset_x=0):
 
 def draw_sidebar(screen, score,sidebar_image):
     sidebar_rect = pygame.Rect(WIDTH_GAME, 0, WIDTH_WINDOW - WIDTH_GAME, HEIGHT)
-    pygame.draw.rect(screen, (GRAY), sidebar_rect)
-
-    sidebar_image_normal = pygame.image.load("assets/sidebar_image.webp").convert_alpha()
-    sidebar_image_normal = pygame.transform.scale(sidebar_image_normal, (260, 520))
-
-    sidebar_image = pygame.image.load("assets/sidebar_image_power.webp").convert_alpha()
-    sidebar_image = pygame.transform.scale(sidebar_image, (260, 520))
-
-
+    pygame.draw.rect(screen, GRAY, sidebar_rect)
 
     font = pygame.font.SysFont(None, 28)
-    text = font.render(f"Score: {score:.1f}", True, (WHITE))
+    text = font.render(f"Score: {score:.1f}", True, WHITE)
+
+ 
+
+
+   
 
     # Score position
     score_x = WIDTH_GAME + 20
@@ -349,14 +346,17 @@ def main():
         screen.fill(settings.bg_color) # Here specifically calling the color from settings.py in order to have a different background color depending on the users setting.
         if state == START:
             ui.draw_start_menu(start_btn)
+
         elif state == PLAYING:
             
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-
-            active_sprite = sidebar_image_power if power_active else sidebar_image_normal
-            draw_sidebar(screen, score, active_sprite)
+            if power_active == True:
+                draw_sidebar(screen, score, sidebar_image_power)
+            else:
+                draw_sidebar(screen,score,sidebar_image_normal)
+            
 
 
         elif state == GAME_OVER:
@@ -367,6 +367,7 @@ def main():
             active_sprite = sidebar_image_normal if power_active else sidebar_image_power
             draw_sidebar(screen, score, active_sprite)
             ui.draw_game_over(go_restart_btn, go_quit_btn)
+
         elif state == PAUSED:
             
             draw_grid(screen, grid)
