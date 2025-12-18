@@ -3,8 +3,7 @@ import random
 from ui import UI, Button , load_sounds , play_music
 from settings import settings
 
-#SIDEBAR_IMAGE=pygame.image.load("assets/sidebar_image.webp").convert_alpha()
-#SIDEBAR_IMAGE=pygame.transform.scale(SIDEBAR_IMAGE(200,200))
+
 
 
 # Size of window/application and the framerate
@@ -102,6 +101,14 @@ def draw_sidebar(screen, score,sidebar_image):
     sidebar_rect = pygame.Rect(WIDTH_GAME, 0, WIDTH_WINDOW - WIDTH_GAME, HEIGHT)
     pygame.draw.rect(screen, (GRAY), sidebar_rect)
 
+    sidebar_image_normal = pygame.image.load("assets/sidebar_image.webp").convert_alpha()
+    sidebar_image_normal = pygame.transform.scale(sidebar_image_normal, (260, 520))
+
+    sidebar_image = pygame.image.load("assets/sidebar_image_power.webp").convert_alpha()
+    sidebar_image = pygame.transform.scale(sidebar_image, (260, 520))
+
+
+
     font = pygame.font.SysFont(None, 28)
     text = font.render(f"Score: {score:.1f}", True, (WHITE))
 
@@ -119,6 +126,24 @@ def draw_sidebar(screen, score,sidebar_image):
 def main():
     pygame.init()
 
+    MAX_SCORE = 200
+    POWER_DURATION = 10000  # milliseconds (5 seconds)
+
+    power_active = False
+    power_start_time = 0
+
+    score_multiplier = 1
+
+
+
+    if power_active:
+        if pygame.time.get_ticks() - power_start_time >= POWER_DURATION:
+            power_active = False
+            score_multiplier = 1
+
+
+
+
     pygame.mixer.pre_init(44100, -16, 2, 512)
     pygame.mixer.init()
     pygame.mixer.set_num_channels(8)
@@ -126,16 +151,23 @@ def main():
     
     
     screen = pygame.display.set_mode((WIDTH_WINDOW, HEIGHT))
-    sidebar_image = pygame.image.load("assets/sidebar_image.webp").convert_alpha()
-    sidebar_image = pygame.transform.scale(sidebar_image, (260, 520))
+    sidebar_image_normal = pygame.image.load("assets/sidebar_image.webp").convert_alpha()
+    sidebar_image_normal = pygame.transform.scale(sidebar_image_normal, (260, 520))
+
+    sidebar_image_power = pygame.image.load("assets/sidebar_image_power.webp").convert_alpha()
+    sidebar_image_power = pygame.transform.scale(sidebar_image_power, (260, 520))
+
+
+    
+
     
 
 
-    pygame.display.set_caption("2Tris")
+    pygame.display.set_caption("Twotris")
     clock = pygame.time.Clock()
     ui = UI(screen, WIDTH_WINDOW, HEIGHT)
 
-    #---SOUND AND MUSIC------
+    #SOUND AND MUSIC
 
     sounds = load_sounds()   
     play_music()
@@ -280,7 +312,19 @@ def main():
                         if lines_cleared > 0:
                             sounds["clear"].play()
 
-                        score += 67 * lines_cleared # i finally fixed the scoring, it should be fine now
+                        score += 67 * lines_cleared * score_multiplier # i finally fixed the scoring, it should be fine now
+                        
+                        
+
+                        # Trigger power mode
+                        if score >= MAX_SCORE and not power_active:
+                            power_active = True
+                            power_start_time = pygame.time.get_ticks()
+                            score_multiplier = score_multiplier + 1   # or 3 if you’re feeling spicy
+
+                        
+
+
 
                         if piece == left_piece:
                             new_piece = Piece()
@@ -310,20 +354,26 @@ def main():
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-            draw_sidebar(screen, score, sidebar_image)
+
+            active_sprite = sidebar_image_power if power_active else sidebar_image_normal
+            draw_sidebar(screen, score, active_sprite)
+
+
         elif state == GAME_OVER:
             
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-            draw_sidebar(screen, score,sidebar_image)
+            active_sprite = sidebar_image_normal if power_active else sidebar_image_power
+            draw_sidebar(screen, score, active_sprite)
             ui.draw_game_over(go_restart_btn, go_quit_btn)
         elif state == PAUSED:
             
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-            draw_sidebar(screen, score, sidebar_image)
+            active_sprite = sidebar_image_normal if power_active else sidebar_image_power
+            draw_sidebar(screen, score, active_sprite)
             ui.draw_pause_menu(pause_buttons)
 
         pygame.display.flip()
