@@ -124,11 +124,11 @@ def main():
     pygame.init()
 
     MAX_SCORE = 200
-    POWER_DURATION = 5  # milliseconds (5 seconds)
+    POWER_DURATION = 10000  # milliseconds (5 seconds)
 
     power_active = False
     power_start_time = 0
-    
+
     score_multiplier = 1
 
 
@@ -206,6 +206,12 @@ def main():
         dt = clock.tick(FPS)
         fall_time += dt
 
+        if power_active:
+            if pygame.time.get_ticks() - power_start_time >= POWER_DURATION:
+                power_active = False
+                score_multiplier = 1
+                MAX_SCORE = MAX_SCORE * 2 
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -274,6 +280,8 @@ def main():
                         right_piece.x = COLS - 4
                         fall_time = 0
                         score = 0.0
+                        power_active = False
+                        
                         game_over = False
                     elif go_quit_btn.is_hovered(mouse_pos):
                         running = False
@@ -291,8 +299,8 @@ def main():
                                 right_piece.x = COLS - 4
                                 fall_time = 0
                                 score = 0.0
-                                draw_sidebar(screen,score,sidebar_image_normal)
-                                power_active == False
+                                power_active = False
+                                score_multiplier = 1
                                 game_over = False
                             elif button.text == "Quit":
                                 running = False
@@ -358,9 +366,6 @@ def main():
                 draw_sidebar(screen, score, sidebar_image_power)
             else:
                 draw_sidebar(screen,score,sidebar_image_normal)
-        
-        if score <= 200:
-            power_active = False
             
 
 
@@ -369,10 +374,8 @@ def main():
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-            if power_active == True:
-                draw_sidebar(screen, score, sidebar_image_power)
-            else:
-                draw_sidebar(screen,score,sidebar_image_normal)
+            active_sprite = sidebar_image_normal if power_active else sidebar_image_power
+            draw_sidebar(screen, score, active_sprite)
             ui.draw_game_over(go_restart_btn, go_quit_btn)
 
         elif state == PAUSED:
@@ -380,10 +383,8 @@ def main():
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-            if power_active == True:
-                draw_sidebar(screen, score, sidebar_image_power)
-            else:
-                draw_sidebar(screen,score,sidebar_image_normal)
+            active_sprite = sidebar_image_normal if power_active else sidebar_image_power
+            draw_sidebar(screen, score, active_sprite)
             ui.draw_pause_menu(pause_buttons)
 
         pygame.display.flip()
