@@ -213,6 +213,7 @@ def main():
                 power_active = False
                 score_multiplier = score_multiplier + 1
                 MAX_SCORE = MAX_SCORE * 2 
+                sounds["powerup"].stop()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -330,6 +331,7 @@ def main():
                             power_active = True
                             power_start_time = pygame.time.get_ticks()
                             score_multiplier = score_multiplier + 1   # or 3 if you’re feeling spicy
+                            sounds["powerup"].play()
 
                         
 

@@ -6,10 +6,12 @@ def load_sounds():
         "drop": pygame.mixer.Sound("sound/drop (2).wav"),
         "clear": pygame.mixer.Sound("sound/clear.wav"),
         "gameover": pygame.mixer.Sound("sound/gameover.wav"),
+        "powerup" : pygame.mixer.Sound("sound/powerup.wav")
     }
     sounds["drop"].set_volume(0.5)
     sounds["clear"].set_volume(0.7)
     sounds["gameover"].set_volume(0.6)
+    sounds["powerup"].set_volume(0.9)
     return sounds
 def play_music():
     pygame.mixer.music.load("sound/Blue Space v0_96.wav")
