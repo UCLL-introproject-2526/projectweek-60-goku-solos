@@ -128,7 +128,7 @@ def main():
 
     power_active = False
     power_start_time = 0
-
+    
     score_multiplier = 1
 
 
@@ -137,6 +137,8 @@ def main():
         if pygame.time.get_ticks() - power_start_time >= POWER_DURATION:
             power_active = False
             score_multiplier = 1
+            
+            
 
 
 
@@ -209,7 +211,7 @@ def main():
         if power_active:
             if pygame.time.get_ticks() - power_start_time >= POWER_DURATION:
                 power_active = False
-                score_multiplier = 1
+                score_multiplier = score_multiplier + 1
                 MAX_SCORE = MAX_SCORE * 2 
 
         for event in pygame.event.get():
@@ -374,8 +376,10 @@ def main():
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-            active_sprite = sidebar_image_normal if power_active else sidebar_image_power
-            draw_sidebar(screen, score, active_sprite)
+            if power_active == True:
+                draw_sidebar(screen, score, sidebar_image_power)
+            else:
+                draw_sidebar(screen, score,sidebar_image_normal)
             ui.draw_game_over(go_restart_btn, go_quit_btn)
 
         elif state == PAUSED:
@@ -383,8 +387,10 @@ def main():
             draw_grid(screen, grid)
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
-            active_sprite = sidebar_image_normal if power_active else sidebar_image_power
-            draw_sidebar(screen, score, active_sprite)
+            if power_active == True:
+                draw_sidebar(screen, score,sidebar_image_power)
+            else:
+                draw_sidebar(screen,score,sidebar_image_normal)
             ui.draw_pause_menu(pause_buttons)
 
         pygame.display.flip()
