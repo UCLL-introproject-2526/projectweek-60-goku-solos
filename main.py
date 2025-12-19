@@ -2,7 +2,7 @@ import pygame
 import random
 from ui import UI, Button , load_sounds , play_music
 from settings import settings
-
+import asyncio
 
 
 
@@ -120,7 +120,7 @@ def draw_sidebar(screen, score,sidebar_image):
     screen.blit(sidebar_image, (image_x, image_y))
 
 # The ACTUAL game
-def main():
+async def main():
     pygame.init()
 
     MAX_SCORE = 200
@@ -394,8 +394,12 @@ def main():
             ui.draw_pause_menu(pause_buttons)
 
         pygame.display.flip()
+        
+        await asyncio.sleep(0)
+
 
     pygame.quit()
 
+
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

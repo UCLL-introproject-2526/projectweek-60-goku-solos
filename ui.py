@@ -33,7 +33,7 @@ GRAY = (40, 40, 40)
 BLACK = (0, 0, 0)
 
 
-#this class is needed for all of the buttons in the app.py file
+#this class is needed for all of the buttons in the main.py file
 class Button:
     def __init__(self, rect, text, font, bg_color, text_color):
         self.rect = pygame.Rect(rect)
