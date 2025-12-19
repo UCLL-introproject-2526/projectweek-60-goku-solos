@@ -97,14 +97,21 @@ def draw_piece(screen, piece, offset_x=0):
             if cell:
                 pygame.draw.rect(screen, piece.color, ((piece.x + x + offset_x//BLOCK_SIZE)*BLOCK_SIZE, (piece.y+y)*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
 
-def draw_sidebar(screen, score,sidebar_image):
+def draw_sidebar(screen, score,multiplier, sidebar_image):
     sidebar_rect = pygame.Rect(WIDTH_GAME, 0, WIDTH_WINDOW - WIDTH_GAME, HEIGHT)
     pygame.draw.rect(screen, GRAY, sidebar_rect)
 
     font = pygame.font.SysFont(None, 28)
     text = font.render(f"Score: {score:.1f}", True, WHITE)
 
- 
+    font = pygame.font.SysFont(None, 28)
+
+    score_text = font.render(f"Score: {int(score)}", True, WHITE)
+    mult_text = font.render(f"Multiplier: x{multiplier}", True, WHITE)
+
+    screen.blit(score_text, (WIDTH_GAME + 20, 20))
+    screen.blit(mult_text, (WIDTH_GAME + 20, 50))
+
 
 
    
@@ -116,7 +123,7 @@ def draw_sidebar(screen, score,sidebar_image):
 
     # Image position (under the score)
     image_x = WIDTH_GAME + 20
-    image_y = score_y + 40  # spacing below score
+    image_y = score_y + 50  # spacing below score
     screen.blit(sidebar_image, (image_x, image_y))
 
 # The ACTUAL game
@@ -283,6 +290,7 @@ async def main():
                         fall_time = 0
                         score = 0.0
                         power_active = False
+                        score_multiplier=1
                         
                         game_over = False
                     elif go_quit_btn.is_hovered(mouse_pos):
@@ -365,9 +373,9 @@ async def main():
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
             if power_active == True:
-                draw_sidebar(screen, score, sidebar_image_power)
+                draw_sidebar(screen, score,score_multiplier,sidebar_image_power)
             else:
-                draw_sidebar(screen,score,sidebar_image_normal)
+                draw_sidebar(screen,score,score_multiplier,sidebar_image_normal)
             
 
 
@@ -377,9 +385,9 @@ async def main():
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
             if power_active == True:
-                draw_sidebar(screen, score, sidebar_image_power)
+                draw_sidebar(screen, score,score_multiplier,sidebar_image_power)
             else:
-                draw_sidebar(screen, score,sidebar_image_normal)
+                draw_sidebar(screen, score,score_multiplier,sidebar_image_normal)
             ui.draw_game_over(go_restart_btn, go_quit_btn)
 
         elif state == PAUSED:
@@ -388,9 +396,9 @@ async def main():
             draw_piece(screen, left_piece)
             draw_piece(screen, right_piece)
             if power_active == True:
-                draw_sidebar(screen, score,sidebar_image_power)
+                draw_sidebar(screen, score,score_multiplier,sidebar_image_power)
             else:
-                draw_sidebar(screen,score,sidebar_image_normal)
+                draw_sidebar(screen,score,score_multiplier,sidebar_image_normal)
             ui.draw_pause_menu(pause_buttons)
 
         pygame.display.flip()
