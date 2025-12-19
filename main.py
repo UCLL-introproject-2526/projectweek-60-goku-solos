@@ -121,7 +121,7 @@ def draw_sidebar(screen, score,multiplier, sidebar_image):
     score_y = 20
     screen.blit(text, (score_x, score_y))
 
-    # Image position (under the score)
+    # Image position 
     image_x = WIDTH_GAME + 20
     image_y = score_y + 50  # spacing below score
     screen.blit(sidebar_image, (image_x, image_y))
@@ -234,6 +234,8 @@ async def main():
                     right_piece.x = COLS - 4
                     fall_time = 0
                     score = 0.0
+                    score_multiplier= 1
+                    power_active = False
                     game_over = False
                 if state == PLAYING:
                     if event.key == pygame.K_ESCAPE:
