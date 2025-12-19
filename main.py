@@ -340,6 +340,8 @@ async def main():
                             power_active = True
                             power_start_time = pygame.time.get_ticks()
                             score_multiplier = score_multiplier + 1   # or 3 if you’re feeling spicy
+                            sounds["powerup"].play()
+
 
                         
 
